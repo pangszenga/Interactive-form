@@ -6,15 +6,26 @@ $(document).ready(function(){
   const $title = $("#title");
   const $design = $("#design");
   const $color = $("#colors-js-puns");
-  const $activities = $(":checkbox");
-  const $activityPrices = [ 200 , 100 , 100 , 100 , 100, 100 , 100]
 
-  console.log($activities);
+
   //Setup page
   $("#otherTitle").hide();
   $color.hide();
   $fields[0].focus();
   $fields.push($emailField);
+
+
+  //functions
+  //function to update price of selected activities
+  function priceTotal() {
+    let price = 0;
+    $("input:checked").each(function()
+    {
+      //look value of selected activity
+      price += parseFloat(this.value);
+    });//end of loop
+    $('#total').val("$" + price.toFixed(2));
+  }//end of function
 
   //Title selection
   $title.on("change", function(e)
@@ -72,49 +83,56 @@ $(document).ready(function(){
   $("input").on( "change" , function (e)
   {
     let $selected = e.target;
-    let price = [];
+    //activities --> boolean returned
 
-    if ($selected.name === "js-frameworks")
+    let frameworks = $('input[name="js-frameworks"]').is(":checked");
+    let libs= $('input[name="js-libs"]').is(":checked");
+    let express= $('input[name="express"]').is(":checked");
+    let node = $('input[name="node"]').is(":checked");
+
+    //conditional selection --> Looking for the selection and clashes
+    if (frameworks == true)
     {
-      $selected.checked = true;
       $('[type="checkbox"][name="express"]')[0].disabled = true;
-      price.push(100);
-      console.log($selected);
     }
-    else if ($selected.name === "express")
+    else if (frameworks == false)
     {
-      $('[type="checkbox"][name="js-frameworks"]')[0].disabled = true;
-      price.push(100);
+      $('[type="checkbox"][name="express"]')[0].disabled = false;
     }
-    else if ($selected.name === "js-libs")
+    else if (libs == true)
     {
       $('[type="checkbox"][name="node"]')[0].disabled = true;
-      price.push(100);
     }
-    else if ($selected.name === "node")
+    else if (libs == false)
+    {
+      $('[type="checkbox"][name="node"]')[0].disabled = false;
+    }
+    else if (express == true)
+    {
+      $('[type="checkbox"][name="js-frameworks"]')[0].disabled = true;
+    }
+    else if (express == false)
+    {
+      $('[type="checkbox"][name="js-frameworks"]')[0].disabled = false;
+    }
+    else if (node == true)
     {
       $('[type="checkbox"][name="js-libs"]')[0].disabled = true;
-      price.push(100);
     }
-    else if ($selected.name === "all")
+    else if (node == false)
     {
-      price.push(200);
+      $('[type="checkbox"][name="js-libs"]')[0].disabled = false;
     }
-    else if ($selected.name === "build-tools")
-    {
-      price.push(100);
-    }
-    else if ($selected.name === "npm")
-    {
-      price.push(100);
-    }
-    else
-    {
-
-    }
-    console.log(price);
+    priceTotal()
   });//function ends
 
+  //Payment section
 
 
-});
+
+
+
+
+
+
+});//end of page load
