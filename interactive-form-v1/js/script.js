@@ -6,14 +6,17 @@ $(document).ready(function(){
   const $title = $("#title");
   const $design = $("#design");
   const $color = $("#colors-js-puns");
-
+  const $payment = $("#payment")
 
   //Setup page
-  $("#otherTitle").hide();
-  $color.hide();
-  $fields[0].focus();
-  $fields.push($emailField);
+  $fields[0].focus();         //focus on the first field
+  $fields.push($emailField);  //array for all fields
 
+  $("#otherTitle").hide();    //hide other title textbox
+  $color.hide();              //hide colors until theme selected
+  $payment.val("credit card");//default selection for payment
+  $("#paypal").hide();        //hide paypal helptext
+  $("#bitcoin").hide();       //hide bitcoin helptext
 
   //functions
   //function to update price of selected activities
@@ -26,6 +29,9 @@ $(document).ready(function(){
     });//end of loop
     $('#total').val("$" + price.toFixed(2));
   }//end of function
+
+
+
 
   //Title selection
   $title.on("change", function(e)
@@ -42,7 +48,7 @@ $(document).ready(function(){
       console.log($selected);
       $("#otherTitle").hide();
     }
-  });//function ends
+  });//end of event listener
 
   //Theme selection
   $design.on("change", function(e)
@@ -77,7 +83,7 @@ $(document).ready(function(){
       $color.hide();
     }
 
-  });//function ends
+  });//end of event listener
 
   //Activity selection
   $("input").on( "change" , function (e)
@@ -122,12 +128,40 @@ $(document).ready(function(){
     else if (node == false)
     {
       $('[type="checkbox"][name="js-libs"]')[0].disabled = false;
-    }
-    priceTotal()
-  });//function ends
+    };// end of conditional statement
+
+    priceTotal();
+
+  });//end of event listener
 
   //Payment section
+  $payment.on( "change" , function(e)
+  { //Setting booleans
+    let creditCard = $('#payment option[value="credit card"]').is(":selected");
+    let paypal = $('#payment option[value="paypal"]').is(":selected");
+    let bitcoin = $('#payment option[value="bitcoin"]').is(":selected");
 
+    //condtional statement to check what is selected
+    if (creditCard == true)
+    {
+      $("#credit-card").show()
+      $("#paypal").hide();
+      $("#bitcoin").show();
+    }
+    else if (paypal == true)
+    {
+      $("#credit-card").hide()
+      $("#paypal").show();
+      $("#bitcoin").hide();
+    }
+    else if (bitcoin == true)
+    {
+      $("#credit-card").hide()
+      $("#paypal").hide();
+      $("#bitcoin").show();
+    };//end of conditional statement
+
+  });//end of event listener
 
 
 
