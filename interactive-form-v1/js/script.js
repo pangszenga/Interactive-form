@@ -132,24 +132,24 @@ $(document).ready(function(){
     else if (frameworks == false)
     {
       $('[type="checkbox"][name="express"]')[0].disabled = false;
-    }
-    else if (libs == true)
+    };//end
+     if (libs == true)
     {
       $('[type="checkbox"][name="node"]')[0].disabled = true;
     }
     else if (libs == false)
     {
       $('[type="checkbox"][name="node"]')[0].disabled = false;
-    }
-    else if (express == true)
+    };//end
+    if (express == true)
     {
       $('[type="checkbox"][name="js-frameworks"]')[0].disabled = true;
     }
     else if (express == false)
     {
       $('[type="checkbox"][name="js-frameworks"]')[0].disabled = false;
-    }
-    else if (node == true)
+    };//end
+    if (node == true)
     {
       $('[type="checkbox"][name="js-libs"]')[0].disabled = true;
     }
@@ -228,11 +228,11 @@ $(document).ready(function(){
   $("form").on("submit", function (e)
   {
     //Name Field
-    if(nameV === "")
+    if(nameV.length === 0)
     {
-      event.preventDefault();
-      $("#name").addClass("borderClass");
-      nameError.fadeIn().insertAfter($("#name"));
+      // event.preventDefault();
+      // $("#name").addClass("borderClass");
+      // nameError.insertAfter($("#name"));
     }
     else
     {
