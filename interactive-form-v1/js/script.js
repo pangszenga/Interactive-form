@@ -1,25 +1,55 @@
 $(document).ready(function(){
 
   //Global Variables
-  const $fields = $(":text").toArray();
+  const $primaryFields = $("#name, #mail").toArray();
   const $emailField = $("#mail")[0];
   const $title = $("#title");
   const $design = $("#design");
   const $color = $("#colors-js-puns");
-  const $payment = $("#payment")
+  const $payment = $("#payment");
+
+
+  //Validation variables
+
+    let nameV = $('#name').val();
+    let mailV = $('#mail').val();
+    let roleCheck= ($('[value="other"]').is(':selected'));
+    let roleV= $('#otherTitle').val();
+    let paymentCheck = ($('[value="credit card"]').is(':selected'));
+    let cardV= $('#cc-num').val();
+    let zipCodeV =  $('#zip').val();
+    let cvvV = $('#payment').val();
+    let checkboxes = (!$("input:checkbox").is(":checked"));
+
+    const mailRegex = /^[^@\s]+@[^@\s.]+\.[a-z]{1,256}$/i;
+    const cardRegex = /^\d{16}$/;
+    const zipCodeRegex = /^\d{5}$/;
+    const cvvRegex = /^\d{3}$/;
+
+    let nameError = $("<p>Please enter in your name e.g. John Pears</p>");
+    let mailError = $("<p>Please enter in your email e.g. mail@forexample.com</p>");
+    let roleError = $("<p>Please enter in your role e.g. Builder</p>");
+    let cardError = $("<p>Please enter in your card number e.g. 1234567891234567</p>");
+    let zipError = $("<p>Please enter your zip code e.g. 85055</p>");
+    let cvvError = $("<p>Please enter your cvv e.g. 123</p>");
+    let checkBoxError = $("<p>Please select at least one</p>");
+
+    let mailEg = $("<p>For example mail@forexample.com</p>");
+    let empty = $("<p>Please do not leave this blank</p>");
 
   //Setup page
-  $fields[0].focus();         //focus on the first field
-  $fields.push($emailField);  //array for all fields
-
+  $primaryFields[0].focus();         //focus on the first field
   $("#otherTitle").hide();    //hide other title textbox
   $color.hide();              //hide colors until theme selected
   $payment.val("credit card");//default selection for payment
   $("#paypal").hide();        //hide paypal helptext
   $("#bitcoin").hide();       //hide bitcoin helptext
 
-  //functions
-  //function to update price of selected activities
+
+
+
+  //FUNCTIONS
+  //Function to update price of selected activities
   function priceTotal() {
     let price = 0;
     $("input:checked").each(function()
@@ -32,7 +62,7 @@ $(document).ready(function(){
 
 
 
-
+  //EVENT LISTENERS
   //Title selection
   $title.on("change", function(e)
   {
@@ -40,12 +70,10 @@ $(document).ready(function(){
 
     if($selected === "other")
     {
-      console.log($selected);
       $("#otherTitle").show();
     }
     else
     {
-      console.log($selected);
       $("#otherTitle").hide();
     }
   });//end of event listener
@@ -163,10 +191,136 @@ $(document).ready(function(){
 
   });//end of event listener
 
+  //Real time validation
+  $("#name").on("blur", function (e)
+  {
+    let input = $(this).val();
+    if(input.length === 0)
+    {
+      empty.insertAfter($("#name"));
+    }
+    else
+    {
+      empty.remove();
+    }
+  });//end of listener
 
+  $("#mail").on("blur", function (e)
+  {
+    let input = $(this).val();
+    if(input.length === 0) {
+      empty.insertAfter($("#mail"));
+      mailEg.remove();
+    }
+    else if ((mailRegex.test(mailV)))
+    {
+      empty.remove();
+      mailEg.remove();
 
+    } else
+    {
+      empty.remove();
+      mailEg.insertAfter($("#mail"));
+    }
+  });//end of listener
 
+  //Check fields before submitting
+  $("form").on("submit", function (e)
+  {
+    //Name Field
+    if(nameV === "")
+    {
+      event.preventDefault();
+      $("#name").addClass("borderClass");
+      nameError.fadeIn().insertAfter($("#name"));
+    }
+    else
+    {
+      $("#name").removeClass("borderClass");
+      nameError.remove();
+    };// end of conditional statement
 
+    //mail Field
+    if(!mailRegex.test(mailV))
+    {
+      event.preventDefault();
+      $("#mail").addClass("borderClass");
+      mailError.fadeIn().insertAfter($("#mail"));
+    }
+    else if (nameRegex.test(nameV))
+    {
+      $("#mail").removeClass("borderClass");
+      mailError.remove();
+    };// end of conditional statement
 
+    //Role Field
+    if (roleCheck == true)
+    {
+      if(roleV.length === 0 )
+      {
+        event.preventDefault();
+        $("#otherTitle").addClass("borderClass");
+        roleError.fadeIn().insertAfter($("#otherTitle"));
+      }
+      else
+      {
+        $("#otherTitle").removeClass("borderClass");
+        roleError.remove();
+      };// end of conditional statement
+
+    };//end of conditional statement
+
+    //Payment Fields
+    if (roleCheck == true)
+    {
+      if(!cardRegex.test(cardV))
+      {
+        event.preventDefault();
+        $("#credit-card").addClass("borderClass");
+        cardError.fadeIn().insertAfter($("#credit-card"));
+      }
+      else if (cardRegex.test(cardV))
+      {
+        $("#credit-card").removeClass("borderClass");
+        cardError.remove();
+      };// end of conditional statement
+
+      if(!zipRegex.test(roleV))
+      {
+        event.preventDefault();
+        $("#zip").addClass("borderClass");
+        zipError.fadeIn().insertAfter($("#zip"));
+      }
+      else if (zipRegex.test(zipV))
+      {
+        $("#zip").removeClass("borderClass");
+        zipError.remove();
+      };// end of conditional statement
+
+      if(!cvvRegex.test(cvvV))
+      {
+        event.preventDefault();
+        $("#cvv").addClass("borderClass");
+        cvvError.fadeIn().insertAfter($("#cvv"));
+      }
+      else if (cvvRegex.test(cvvV))
+      {
+        $("#cvv").removeClass("borderClass");
+        cvvError.remove();
+      };// end of conditional statement
+    };//end of conditional statement
+
+    //checkboxes
+    if (checkboxes == true)
+    {
+       event.preventDefault();
+       checkBoxError.fadeIn().insertAfter($("#total"));
+    }
+    else
+    {
+       checkBoxError.remove();
+    }
+
+  });//end of event listener
 
 });//end of page load
