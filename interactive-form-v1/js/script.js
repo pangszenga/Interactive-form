@@ -11,19 +11,9 @@ $(document).ready(function(){
 
   //Validation variables
 
-    let nameV = $('#name').val();
-    let mailV = $('#mail').val();
-    let roleCheck= ($('[value="other"]').is(':selected'));
-    let roleV= $('#otherTitle').val();
-    let paymentCheck = ($('[value="credit card"]').is(':selected'));
-    let cardV= $('#cc-num').val();
-    let zipCodeV =  $('#zip').val();
-    let cvvV = $('#payment').val();
-    let checkboxes = (!$("input:checkbox").is(":checked"));
-
     const mailRegex = /^[^@\s]+@[^@\s.]+\.[a-z]{1,256}$/i;
     const cardRegex = /^\d{16}$/;
-    const zipCodeRegex = /^\d{5}$/;
+    const zipRegex = /^\d{5}$/;
     const cvvRegex = /^\d{3}$/;
 
     let nameError = $("<p>Please enter in your name e.g. John Pears</p>");
@@ -202,11 +192,13 @@ $(document).ready(function(){
     else
     {
       empty.remove();
+      $("#name").removeClass("borderClass");
     }
   });//end of listener
 
   $("#mail").on("blur", function (e)
   {
+    let mailV = $('#mail').val();
     let input = $(this).val();
     if(input.length === 0) {
       empty.insertAfter($("#mail"));
@@ -216,6 +208,7 @@ $(document).ready(function(){
     {
       empty.remove();
       mailEg.remove();
+      $("#mail").removeClass("borderClass");
 
     } else
     {
@@ -227,12 +220,23 @@ $(document).ready(function(){
   //Check fields before submitting
   $("form").on("submit", function (e)
   {
+    //Look at these elements when form is about to be submitted
+    let nameV = $('#name').val();
+    let mailV = $('#mail').val();
+    let roleCheck= ($('[value="other"]').is(':selected'));
+    let roleV= $('#otherTitle').val();
+    let paymentCheck = ($('[value="credit card"]').is(':selected'));
+    let cardV= $('#cc-num').val();
+    let zipCodeV =  $('#zip').val();
+    let cvvV = $('#payment').val();
+    let checkboxes = (!$("input:checkbox").is(":checked"));
     //Name Field
     if(nameV.length === 0)
     {
-      // event.preventDefault();
-      // $("#name").addClass("borderClass");
-      // nameError.insertAfter($("#name"));
+      event.preventDefault();
+      $("#name").addClass("borderClass");
+      nameError.insertAfter($("#name"));
+      empty.remove();
     }
     else
     {
@@ -271,17 +275,18 @@ $(document).ready(function(){
     };//end of conditional statement
 
     //Payment Fields
-    if (roleCheck == true)
+    if (paymentCheck == true)
     {
       if(!cardRegex.test(cardV))
       {
+        console.log("empty");
         event.preventDefault();
-        $("#credit-card").addClass("borderClass");
-        cardError.fadeIn().insertAfter($("#credit-card"));
+        $("#cc-num").addClass("borderClass");
+        cardError.fadeIn().insertAfter($("#cc-num"));
       }
       else if (cardRegex.test(cardV))
       {
-        $("#credit-card").removeClass("borderClass");
+        $("#cc-num").removeClass("borderClass");
         cardError.remove();
       };// end of conditional statement
 
