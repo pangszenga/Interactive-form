@@ -10,22 +10,22 @@ $(document).ready(function(){
 
 
   //Validation variables
-
     const mailRegex = /^[^@\s]+@[^@\s.]+\.[a-z]{1,256}$/i;
-    const cardRegex = /\d{16}/;
-    const zipRegex = /^[0-9]{5}$/;
-    const cvvRegex = /^[0-9]{3}$/;
+    const cardRegex = /^(\d{4}[- ]){3}\d{4}|\d{16}$/;
+    const zipRegex = /^\d{5}$/;
+    const cvvRegex = /^\d{3}$/;
 
     let nameError = $("<p>Please enter in your name e.g. John Pears</p>");
     let mailError = $("<p>Please enter in your email e.g. mail@forexample.com</p>");
     let roleError = $("<p>Please enter in your role e.g. Builder</p>");
-    let cardError = $("<p>Please enter in your card number e.g. 1234567891234567</p>");
+    let cardError = $("<p>Please enter in your card number e.g. 1234-1234-1234-1234</p>");
     let zipError = $("<p>Please enter your zip code e.g. 85055</p>");
     let cvvError = $("<p>Please enter your cvv e.g. 123</p>");
     let checkBoxError = $("<p>Please select at least one</p>");
 
 
     let mailEg = $("<p>For example mail@forexample.com</p>");
+    let missingAt = $("<p>You are missing your '@'</p>");
     let empty = $("<p>Please do not leave this blank</p>");
 
   //Setup page
@@ -166,7 +166,7 @@ $(document).ready(function(){
     {
       $("#credit-card").show()
       $("#paypal").hide();
-      $("#bitcoin").show();
+      $("#bitcoin").hide();
     }
     else if (paypal == true)
     {
@@ -209,22 +209,35 @@ $(document).ready(function(){
   {
     let mailV = $('#mail').val();
     let input = $(this).val();
+
     if(input.length === 0) {
       empty.insertAfter($("#mail"));
       mailEg.remove();
+      missingAt.remove();
+    }
+    else if (mailV.includes("@")==false)
+    {
+      missingAt.insertAfter($("#mail"));
+      mailEg.remove();
+      empty.remove();
     }
     else if ((mailRegex.test(mailV)))
     {
       empty.remove();
       mailEg.remove();
+      missingAt.remove();
       $("#mail").removeClass("borderClass");
 
     } else
     {
+      missingAt.remove();
       empty.remove();
       mailEg.insertAfter($("#mail"));
-    }
+    };//end of conditional statement
   });//end of listener
+
+
+
 
   //Check fields before submitting
   $("form").on("submit", function (e)
@@ -260,7 +273,7 @@ $(document).ready(function(){
       $("#mail").addClass("borderClass");
       mailError.fadeIn().insertAfter($("#mail"));
     }
-    else if (nameRegex.test(nameV))
+    else if (mailRegex.test(mailV))
     {
       $("#mail").removeClass("borderClass");
       mailError.remove();
@@ -288,7 +301,6 @@ $(document).ready(function(){
     {
       if(!cardRegex.test(cardV))
       {
-        console.log("empty");
         event.preventDefault();
         $("#cc-num").addClass("borderClass");
         cardError.fadeIn().insertAfter($("#cc-num"));
@@ -334,9 +346,9 @@ $(document).ready(function(){
     //checkboxes
     if (checkboxes == false)
     {
-      console.log("true");
-       e.preventDefault();
+       event.preventDefault();
        checkBoxError.fadeIn().insertAfter($("#total"));
+       checkBoxError.css('color','red');
     }
     else
     {
