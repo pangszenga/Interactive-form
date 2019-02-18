@@ -12,9 +12,9 @@ $(document).ready(function(){
   //Validation variables
 
     const mailRegex = /^[^@\s]+@[^@\s.]+\.[a-z]{1,256}$/i;
-    const cardRegex = /^\d{16}$/;
-    const zipRegex = /^\d{5}$/;
-    const cvvRegex = /^\d{3}$/;
+    const cardRegex = /\d{16}/;
+    const zipRegex = /^[0-9]{5}$/;
+    const cvvRegex = /^[0-9]{3}$/;
 
     let nameError = $("<p>Please enter in your name e.g. John Pears</p>");
     let mailError = $("<p>Please enter in your email e.g. mail@forexample.com</p>");
@@ -23,6 +23,7 @@ $(document).ready(function(){
     let zipError = $("<p>Please enter your zip code e.g. 85055</p>");
     let cvvError = $("<p>Please enter your cvv e.g. 123</p>");
     let checkBoxError = $("<p>Please select at least one</p>");
+
 
     let mailEg = $("<p>For example mail@forexample.com</p>");
     let empty = $("<p>Please do not leave this blank</p>");
@@ -155,6 +156,7 @@ $(document).ready(function(){
   //Payment section
   $payment.on( "change" , function(e)
   { //Setting booleans
+    let blank = $('#payment option[value="select_method"]').is(":selected");
     let creditCard = $('#payment option[value="credit card"]').is(":selected");
     let paypal = $('#payment option[value="paypal"]').is(":selected");
     let bitcoin = $('#payment option[value="bitcoin"]').is(":selected");
@@ -177,6 +179,13 @@ $(document).ready(function(){
       $("#credit-card").hide()
       $("#paypal").hide();
       $("#bitcoin").show();
+    }
+    else if (blank == true)
+    {
+      $("#credit-card").hide()
+      $("#paypal").hide();
+      $("#bitcoin").hide();
+      checkBoxError.insertAfter($('#payment'));
     };//end of conditional statement
 
   });//end of event listener
@@ -227,9 +236,9 @@ $(document).ready(function(){
     let roleV= $('#otherTitle').val();
     let paymentCheck = ($('[value="credit card"]').is(':selected'));
     let cardV= $('#cc-num').val();
-    let zipCodeV =  $('#zip').val();
-    let cvvV = $('#payment').val();
-    let checkboxes = (!$("input:checkbox").is(":checked"));
+    let zipV =  $('#zip').val();
+    let cvvV = $('#cvv').val();
+    let checkboxes = ($("input:checkbox").is(":checked"));
     //Name Field
     if(nameV.length === 0)
     {
@@ -290,7 +299,7 @@ $(document).ready(function(){
         cardError.remove();
       };// end of conditional statement
 
-      if(!zipRegex.test(roleV))
+      if(!zipRegex.test(zipV))
       {
         event.preventDefault();
         $("#zip").addClass("borderClass");
@@ -313,12 +322,20 @@ $(document).ready(function(){
         $("#cvv").removeClass("borderClass");
         cvvError.remove();
       };// end of conditional statement
+
+      if ($('#payment option[value="select_method"]').is(":selected") == true)
+      {
+        console.log("blank");
+        e.preventDefault();
+        checkBoxError.fadeIn().insertAfter($('#payment'));
+      };//end of conditional statement
     };//end of conditional statement
 
     //checkboxes
-    if (checkboxes == true)
+    if (checkboxes == false)
     {
-       event.preventDefault();
+      console.log("true");
+       e.preventDefault();
        checkBoxError.fadeIn().insertAfter($("#total"));
     }
     else
