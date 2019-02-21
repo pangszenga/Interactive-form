@@ -11,7 +11,7 @@ $(document).ready(function(){
 
   //Validation variables
     const mailRegex = /^[^@\s]+@[^@\s.]+\.[a-z]{1,256}$/i;
-    const cardRegex = /^(\d{4}[- ]){3}\d{4}|\d{16}$/;
+    const cardRegex = /^(\d{1,4}[- ]+){3}\d{1,4}|\d{13,16}$/;
     const zipRegex = /^\d{5}$/;
     const cvvRegex = /^\d{3}$/;
 
